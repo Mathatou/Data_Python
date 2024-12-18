@@ -1,23 +1,64 @@
+import os
 import requests
 import tarfile
-import os
-def main():    
-    download_folder = './raw_data'
-    extraction_folder = './csv_file'
+import shutil  
 
+def main():       
+    download("https://dax-cdn.cdn.appdomain.cloud/dax-airline/1.0.1/airline_2m.tar.gz", "airline_2m.tar.gz")    
+    download("https://ourairports.com/countries/US/airports.csv", "airports.csv")    
+
+
+def download(url, filename):
+    download_folder = './raw_data'
+    extraction_folder = './extracted_csv_file'
 
     os.makedirs(download_folder, exist_ok=True)
     os.makedirs(extraction_folder, exist_ok=True)
-    url = 'https://dax-cdn.cdn.appdomain.cloud/dax-airline/1.0.1/airline_2m.tar.gz'
-    r = requests.get(url, allow_redirects=True)
 
-    file_path = os.path.join(download_folder,'airline_2m.tar.gz')
-    with open(file_path, 'wb') as file:
-        file.write(r.content)
-    
-    # Ouvre le fichier extrait le CSV et le met dans le fichier courant
-    with tarfile.open(file_path, 'r:gz') as tar:
-        tar.extractall(path=extraction_folder)
-    
+    file_path = os.path.join(download_folder, filename)
+
+    try:
+        with requests.get(url, stream=True, allow_redirects=True) as response:
+            response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+            with open(file_path, 'wb') as file:
+                for chunk in response.iter_content(chunk_size=8192):  # Adjust chunk size as needed
+                    file.write(chunk)
+
+        process_downloaded_file(file_path, extraction_folder)
+        cleanup_download_folder(download_folder)  # Clean up AFTER processing
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error during download: {e}")
+        cleanup_download_folder(download_folder, error=True) # Clean up even if there is an error
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        cleanup_download_folder(download_folder, error=True) # Clean up even if there is an error
+
+def process_downloaded_file(file_path, extraction_folder):
+    filename = os.path.basename(file_path)
+    if filename.endswith(".gz"):
+        try:
+            with tarfile.open(file_path, 'r:gz') as tar:
+                tar.extractall(path=extraction_folder)
+        except tarfile.ReadError as e:
+            print(f"Error extracting tar.gz file: {e}")
+    else:
+        try:
+            shutil.move(file_path, os.path.join(extraction_folder, filename))
+        except OSError as e:
+            print(f"Error moving file: {e}")
+
+def cleanup_download_folder(download_folder, error=False):
+    try:
+        if error:
+            print(f"Cleaning up download folder {download_folder} due to an error.")
+        shutil.rmtree(download_folder) # Use shutil for robust removal
+        print(f"Download folder '{download_folder}' cleaned up.")
+    except FileNotFoundError:
+        if not error: # Only print if it's not an error cleanup
+            print(f"Warning: Download folder '{download_folder}' not found during cleanup.")
+    except OSError as e:
+        print(f"Error cleaning up download folder: {e}")
+
 if __name__ == '__main__':
     main()

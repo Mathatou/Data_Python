@@ -2,10 +2,11 @@ import pandas as pd
 import os
 
 def main():
-    clean_data = "./cleaned_data"
+    extracted_csv_file = "./extracted_csv_file/"
+    clean_data = "./csv"
     os.makedirs(clean_data, exist_ok=True)
     
-    ds = pd.read_csv("csv_file/airline_2m.csv",encoding='latin1')
+    ds = pd.read_csv(extracted_csv_file + "airline_2m.csv",encoding='latin1')
     if 'Year' not in ds.columns:
         print("Error")
         return 
