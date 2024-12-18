@@ -5,7 +5,7 @@ def main():
     clean_data = "./cleaned_data"
     os.makedirs(clean_data, exist_ok=True)
     
-    ds = pd.read_csv("csv_file/airline_2m.csv",encoding='ISO-8859-1')
+    ds = pd.read_csv("csv_file/airline_2m.csv",encoding='latin1')
     if 'Year' not in ds.columns:
         print("Error")
         return 
