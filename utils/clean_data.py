@@ -2,11 +2,12 @@ import pandas as pd
 import os
 
 def main():
-    extracted_csv_file = "./extracted_csv_file/"
-    clean_data = "./csv"
-    os.makedirs(clean_data, exist_ok=True)
+    final_folder = "./csv/"
+    os.makedirs(final_folder, exist_ok=True)
     
-    ds = pd.read_csv(extracted_csv_file + "airline_2m.csv",encoding='latin1')
+
+    prefiltered_csv = "airline_2m.csv"
+    ds = pd.read_csv(final_folder + prefiltered_csv,encoding='latin1')
     if 'Year' not in ds.columns:
         print("Error")
         return 
@@ -29,14 +30,17 @@ def main():
     'DivDistance', 'Div1Airport', 'Div1AirportID', 'Div1AirportSeqID', 'Div1WheelsOn',
     'Div1TotalGTime', 'Div1LongestGTime', 'Div1WheelsOff', 'Div1TailNum','OriginStateName',
     'DestStateName'
-]
+    ]
 
     # Drop the columns
     filtered_ds = filtered_ds.drop(columns=columns_to_drop, errors='ignore')
 
-        
-        
-    filtered_ds.to_csv(os.path.join(clean_data,"cleaned_csv.csv"),index=False)
+    
+    final_name = "flights.csv"
+    filtered_ds.to_csv(os.path.join(final_folder, final_name),index=False)
+
+    
+    os.remove(final_folder + prefiltered_csv)
     
 if __name__ == '__main__':
     main()
