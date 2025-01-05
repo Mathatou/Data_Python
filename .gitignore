@@ -4,3 +4,5 @@ airline_2m.csv
 /csv/flights.csv
 
 *.pyc
+
+.venv
