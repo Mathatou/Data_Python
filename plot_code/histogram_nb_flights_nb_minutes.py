@@ -48,7 +48,7 @@ def exec(df):
     ))
     
     histogram.update_layout(
-        title="Distribution of Flight Delays by Severity",
+        title="Distribution of over 345 662 Flight Delays by Severity",
         xaxis_title="Departure Delay (Minutes)",
         yaxis_title="Number of Flights",
         template="plotly_white",
