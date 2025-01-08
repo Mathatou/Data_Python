@@ -6,3 +6,5 @@ airline_2m.csv
 *.pyc
 
 .venv
+
+__pycache__

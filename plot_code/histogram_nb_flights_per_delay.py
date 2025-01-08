@@ -61,4 +61,6 @@ def exec(df):
         )
     )
     
-    histogram.show()
+    
+    return histogram
+
