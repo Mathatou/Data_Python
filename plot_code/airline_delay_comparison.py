@@ -79,4 +79,6 @@ def exec(df):
         font=dict(size=12, color="gray")
     )
     
-    bar_plot.show()
+    
+    return bar_plot
+

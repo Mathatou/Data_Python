@@ -4,12 +4,6 @@ import plotly.graph_objects as go
 from plotly.graph_objs import Marker
 from plotly.io import write_html
 
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
-from plotly.graph_objs import Marker
-from plotly.io import write_html
-
 def exec(df):
     df_minutes = df['DepTime'].apply(time_to_minutes)
     max_minutes = 1440
@@ -96,7 +90,9 @@ def exec(df):
         annotations=annotations  # Added period labels
     )
     
-    histogram.show()
+    return histogram
+
+
 
 
 # Convert time to minutes
