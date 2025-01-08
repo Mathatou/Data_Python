@@ -3,23 +3,27 @@ import pandas as pd
 import plot_code.airline_delay_comparison
 import plot_code.histogram_nb_flights_per_delay
 import plot_code.histogram_nb_flights_per_hours
+import map.flight_per_state
 
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 from plot_code.airline_delay_comparison import exec as airline_delay_plot
 from plot_code.histogram_nb_flights_per_delay import exec as flights_delay_plot
 from plot_code.histogram_nb_flights_per_hours import exec as flights_hours_plot
-
+from map.flight_per_state import exec as flights_per_state
 
 
 def main():
-    df = pd.read_csv("./csv/flights.csv", encoding='latin1')
+    F_df = pd.read_csv("./csv/flights.csv", encoding='latin1')
+    S_df = pd.read_csv("./csv/states.csv", encoding='latin1')
+
     
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     
-    delay_comparison = airline_delay_plot(df)
-    flights_delay = flights_delay_plot(df)
-    flights_hours = flights_hours_plot(df)
+    delay_comparison = airline_delay_plot(F_df)
+    flights_delay = flights_delay_plot(F_df)
+    flights_hours = flights_hours_plot(F_df)
+    map_flight_per_state = flights_per_state(F_df,S_df)
 
 
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -61,6 +65,7 @@ def main():
             ], width=12)
         ]),
         
+        
         dbc.Row([
             dbc.Col(
                 html.Footer(
@@ -68,7 +73,20 @@ def main():
                     className="text-center text-muted mb-4"
                 )
             )
-        ])
+        ]),
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader("Number of flights per state between 2015 and 2020"),
+                    dbc.CardBody(
+                        html.Iframe(
+                            srcDoc=open("./map/flight_per_state.html","r").read(),
+                            style={"width": "100%", "height": "600px", "border": "none"}                            
+                        )
+                    )
+                ], className="mb-4")
+            ], width=12)
+        ]),
     ], fluid=True)
     
     return app
