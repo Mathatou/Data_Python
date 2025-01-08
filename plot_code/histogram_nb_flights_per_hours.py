@@ -11,23 +11,6 @@ from plotly.graph_objs import Marker
 from plotly.io import write_html
 
 def exec(df):
-    def time_to_minutes(time):
-        if pd.isna(time):
-            return np.nan
-        time_str = str(int(time)).zfill(4)
-        if len(time_str) <= 2:
-            hours = 0
-            minutes = int(time_str)
-        else:
-            hours = int(time_str[:-2])
-            minutes = int(time_str[-2:])
-        return hours * 60 + minutes
-
-    def minutes_to_time_str(minutes):
-        hours = int(minutes) // 60
-        mins = int(minutes) % 60
-        return f"{hours:02d}:{mins:02d}"
-
     df_minutes = df['DepTime'].apply(time_to_minutes)
     max_minutes = 1440
     
