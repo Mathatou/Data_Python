@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from dash import html, dcc
 from dash.dependencies import Input, Output
+from src.utils.time import format_time
 
 class TimeDistributionComponent:
     def __init__(self, app, df):
@@ -11,19 +12,18 @@ class TimeDistributionComponent:
         self.component_id = 'time-distribution'
         self._register_callbacks()  
 
-
     def create_component(self):
         """Creates the component layout"""
         return html.Div([
             dcc.Dropdown(
                 id=f'{self.component_id}-dropdown',
                 options=[
-                    {'label': 'Hours', 'value': 'hours'},
+                    {'label': 'Minutes', 'value': 'minutes'},
                     {'label': 'Days', 'value': 'days'},
                     {'label': 'Months', 'value': 'months'},
                     {'label': 'Years', 'value': 'years'}
                 ],
-                value='hours',
+                value='minutes',
                 clearable=False,
                 className='mb-3'
             ),
@@ -31,13 +31,13 @@ class TimeDistributionComponent:
         ])
 
     def _register_callbacks(self):
-        """Registers  callbacks"""
+        """Registers callbacks"""
         @self.app.callback(
             Output(f'{self.component_id}-graph', 'figure'),
             [Input(f'{self.component_id}-dropdown', 'value')]
         )
         def update_graph(selected_period):
-            if selected_period == 'hours':
+            if selected_period == 'minutes':
                 return self._create_hourly_distribution()
             elif selected_period == 'days':
                 return self._create_daily_distribution()
@@ -47,17 +47,18 @@ class TimeDistributionComponent:
                 return self._create_yearly_distribution()
 
     def _create_hourly_distribution(self):
-        """Creates histogram for hourly distribution """
-        df_minutes = self.df['DepTime'].apply(self._time_to_minutes)
-        max_minutes = 1440
+        """Creates histogram for hourly distribution aggregated every five minutes using time-based intervals"""
+        time_str = self.df['DepTime'].apply(format_time).astype(str).replace('NaT', '')
+        df_time = pd.to_datetime('2000-01-01 ' + time_str, errors='coerce').dropna()
+        
         fig = go.Figure()
         
         periods = [
-            {"x0": 0, "x1": 360, "name": "Night", "color": "#D4E6F1"},
-            {"x0": 1260, "x1": 1440, "name": "Night", "color": "#D4E6F1"},
-            {"x0": 360, "x1": 660, "name": "Morning", "color": "#FCF3CF"},
-            {"x0": 660, "x1": 1080, "name": "Afternoon", "color": "#FADBD8"},
-            {"x0": 1080, "x1": 1260, "name": "Evening", "color": "#E8DAEF"}
+            {"x0": pd.to_datetime("2000-01-01 00:00"), "x1": pd.to_datetime("2000-01-01 06:00"), "name": "Night", "color": "#D4E6F1"},
+            {"x0": pd.to_datetime("2000-01-01 21:00"), "x1": pd.to_datetime("2000-01-01 23:59"), "name": "Night", "color": "#D4E6F1"},
+            {"x0": pd.to_datetime("2000-01-01 06:00"), "x1": pd.to_datetime("2000-01-01 11:00"), "name": "Morning", "color": "#FCF3CF"},
+            {"x0": pd.to_datetime("2000-01-01 11:00"), "x1": pd.to_datetime("2000-01-01 18:00"), "name": "Afternoon", "color": "#FADBD8"},
+            {"x0": pd.to_datetime("2000-01-01 18:00"), "x1": pd.to_datetime("2000-01-01 21:00"), "name": "Evening", "color": "#E8DAEF"}
         ]
         
         for period in periods:
@@ -72,39 +73,42 @@ class TimeDistributionComponent:
             )
         
         fig.add_trace(go.Histogram(
-            x=df_minutes,
-            nbinsx=max_minutes,
-            marker=dict(
-                color='#4682B4',
-                line=dict(width=0.1, color='white')
-            ),
+            x=df_time,
+            xbins=dict(start=pd.to_datetime("2000-01-01 00:00"), end=pd.to_datetime("2000-01-01 23:59"), size=5*60*1000),
+            marker_color='#4682B4',
             name='Departures',
             hovertemplate="Time: %{x}<br>Flights: %{y}<extra></extra>"
         ))
         
         annotations = [
-            dict(x=180, y=1.1, text="Night (00:00-06:00)", showarrow=False, xref='x', yref='paper'),
-            dict(x=510, y=1.1, text="Morning (06:00-11:00)", showarrow=False, xref='x', yref='paper'),
-            dict(x=870, y=1.1, text="Afternoon (11:00-18:00)", showarrow=False, xref='x', yref='paper'),
-            dict(x=1170, y=1.1, text="Evening (18:00-21:00)", showarrow=False, xref='x', yref='paper'),
-            dict(x=1350, y=1.1, text="Night (21:00-24:00)", showarrow=False, xref='x', yref='paper')
+            dict(x=pd.to_datetime("2000-01-01 03:00"), y=1.1, text="Night (00:00-06:00)", showarrow=False, xref='x', yref='paper'),
+            dict(x=pd.to_datetime("2000-01-01 08:30"), y=1.1, text="Morning (06:00-11:00)", showarrow=False, xref='x', yref='paper'),
+            dict(x=pd.to_datetime("2000-01-01 14:30"), y=1.1, text="Afternoon (11:00-18:00)", showarrow=False, xref='x', yref='paper'),
+            dict(x=pd.to_datetime("2000-01-01 19:30"), y=1.1, text="Evening (18:00-21:00)", showarrow=False, xref='x', yref='paper'),
+            dict(x=pd.to_datetime("2000-01-01 22:30"), y=1.1, text="Night (21:00-24:00)", showarrow=False, xref='x', yref='paper')
         ]
         
-        tick_vals = list(range(0, max_minutes + 1, 30))
-        tick_text = [self._minutes_to_time_str(val) for val in tick_vals]
+        tick_vals = pd.date_range("2000-01-01 00:00", "2000-01-01 23:59", freq="30min")
         
         self._update_layout(fig, "Flight Departure Distribution Throughout the Day", 
-                          "Departure Time", "Number of Flights", annotations, tick_vals, tick_text)
+                            "Departure Time", "Number of Flights", annotations, tick_vals, xaxis_type='date')
         return fig
 
+        
     def _create_daily_distribution(self):
         """Creates bar plot for daily distribution"""
         df_daily = self.df.copy()
-        df_daily['DayOfWeek'] = pd.to_datetime(
+        
+        df_daily['Date'] = pd.to_datetime(
             df_daily['Year'].astype(str) + '-' + 
             df_daily['Month'].astype(str) + '-' + 
-            df_daily['DayofMonth'].astype(str)
-        ).dt.dayofweek
+            df_daily['DayofMonth'].astype(str),
+            errors='coerce'
+        )
+        
+        df_daily = df_daily.dropna(subset=['Date'])
+        
+        df_daily['DayOfWeek'] = df_daily['Date'].dt.dayofweek
         
         days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         day_counts = df_daily['DayOfWeek'].value_counts().sort_index()
@@ -118,13 +122,14 @@ class TimeDistributionComponent:
         ))
         
         self._update_layout(fig, "Flight Distribution by Day of Week",
-                          "Day of Week", "Number of Flights")
+                            "Day of Week", "Number of Flights")
         return fig
 
     def _create_monthly_distribution(self):
         """Creates bar plot for monthly distribution"""
         months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        
         month_counts = self.df['Month'].value_counts().sort_index()
         
         fig = go.Figure()
@@ -136,7 +141,7 @@ class TimeDistributionComponent:
         ))
         
         self._update_layout(fig, "Flight Distribution by Month",
-                          "Month", "Number of Flights")
+                            "Month", "Number of Flights")
         return fig
 
     def _create_yearly_distribution(self):
@@ -152,11 +157,10 @@ class TimeDistributionComponent:
         ))
         
         self._update_layout(fig, "Flight Distribution by Year",
-                          "Year", "Number of Flights")
+                            "Year", "Number of Flights")
         return fig
-
-    def _update_layout(self, fig, title, xaxis_title, yaxis_title, 
-                      annotations=None, tick_vals=None, tick_text=None):
+    
+    def _update_layout(self, fig, title, xaxis_title, yaxis_title, annotations=None, tick_vals=None, xaxis_type=None):
         """Updates the layout of the figure"""
         layout_dict = dict(
             title=dict(
@@ -190,31 +194,13 @@ class TimeDistributionComponent:
         if annotations:
             layout_dict['annotations'] = annotations
         
-        if tick_vals and tick_text:
+        if tick_vals is not None:
             layout_dict['xaxis']['tickmode'] = 'array'
             layout_dict['xaxis']['tickvals'] = tick_vals
-            layout_dict['xaxis']['ticktext'] = tick_text
+            layout_dict['xaxis']['ticktext'] = [t.strftime('%H:%M') for t in tick_vals] if xaxis_type == 'date' else tick_vals
             layout_dict['xaxis']['tickangle'] = 45
         
+        if xaxis_type:
+            layout_dict['xaxis']['type'] = xaxis_type
+        
         fig.update_layout(layout_dict)
-
-    @staticmethod
-    def _time_to_minutes(time):
-        """Converts time to minutes"""
-        if pd.isna(time):
-            return np.nan
-        time_str = str(int(time)).zfill(4)
-        if len(time_str) <= 2:
-            hours = 0
-            minutes = int(time_str)
-        else:
-            hours = int(time_str[:-2])
-            minutes = int(time_str[-2:])
-        return hours * 60 + minutes
-
-    @staticmethod
-    def _minutes_to_time_str(minutes):
-        """Converts minutes to time string"""
-        hours = int(minutes) // 60
-        mins = int(minutes) % 60
-        return f"{hours:02d}:{mins:02d}"
