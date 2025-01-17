@@ -5,8 +5,9 @@ from plot_code.airline_delay_comparison import exec as airline_delay_plot
 from plot_code.delay_distribution import DelayDistributionComponent
 from plot_code.time_distribution_component import TimeDistributionComponent 
 from plot_code.delay_duration import DelayDurationComponent 
-
+from utils.extract_csv import extract_if_needed
 def main():
+    extract_if_needed()
     df = pd.read_csv("./csv/flights.csv", encoding='latin1')
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     
