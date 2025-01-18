@@ -6,7 +6,7 @@ import os
 
 def exec(F_df, S_df):
     # Load GeoJSON data
-    usa_states = geopd.read_file("./map/geous.geojson")
+    usa_states = geopd.read_file("./data/geojson/geous.geojson")
 
     # If necessary columns are not in the files, the program stops
     if not {'OriginState'}.issubset(F_df.columns):
