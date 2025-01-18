@@ -8,7 +8,7 @@ from plot_code.delay_duration import DelayDurationComponent
 from plot_code.airline_performance_comparison import AirlinePerformanceComponent
 from plot_code.carrier_market_comparison import CarrierMarketComparisonComponent
 from plot_code.flight_distribution import FlightDistributionComponent
-
+from plot_code.flight_distance_distribution import FlightDistanceDistribution
 
 def main():
     extract_if_needed()
@@ -27,13 +27,23 @@ def main():
     airline_performance = AirlinePerformanceComponent(app, flights_df, airlines_df)
     carrier_market_comparison = CarrierMarketComparisonComponent(app, flights_df, geojson_path)
     flight_distribution_component = FlightDistributionComponent(app, flights_df, states_df, geojson_path)
-
+    flight_distance_chart = FlightDistanceDistribution(app, flights_df)
+    
     app.layout = dbc.Container([
         dbc.Row([
             dbc.Col(html.H1("Flight Analysis Dashboard",
                     className="text-center text-primary mb-4 mt-4"))
         ]),
-
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader("Flight Distance Distribution"),
+                    dbc.CardBody(
+                        flight_distance_chart.create_component()
+                    )
+                ], className="mb-4")
+            ], width=12, lg=6),
+        ]),
         dbc.Row([
             dbc.Col([
                 dbc.Card([
