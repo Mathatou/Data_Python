@@ -29,47 +29,49 @@ Nous avons également un fichier *get_data.py* qui télécharge les données (ce
 # Developper Guide
 
 ```mermaid
+%% Section 1 : utils
 graph TD
-    A[Projet Data_Python]
-
-    %% Modules principaux
-    A --> B[utils]
-    A --> C[map]
-    A --> D[plot_code]
-    A --> E[src]
-    A --> F[csv]
-    A --> G[data]
-
-    %% Détails des fichiers dans chaque module
-    B --> B1[clean_data.py]
+    B[utils]
+    B --> B1[clean<br>_data.py]
     B --> B2[download.py]
-    B --> B3[extract_csv.py]
+    B --> B3[extract<br>_csv.py]
+```
 
-    C --> C1[flight_per_state.py]
+```mermaid
+%% Section 2 : map et plot_code
+graph TD
+    C[map]
+    C --> C1[flight<br>_per<br>_state.py]
     C --> C2[geous.geojson]
 
-    D --> D1[airline_performance_comparison.py]
-    D --> D2[carrier_market_comparison.py]
-    D --> D3[delay_distribution.py]
-    D --> D4[delay_duration.py]
-    D --> D5[time_distribution_component.py]
-    D --> D6[flight_distance_distribution.py]
-    D --> D7[flight_distribution.py]
-    
-    E --> E1[utils/time.py]
+    D[plot_code]
+    D --> D1[airline<br>_performance<br>_comparison.py]
+    D --> D2[carrier<br>_market<br>_comparison.py]
+    D --> D3[delay<br>_distribution.py]
+    D --> D4[delay<br>_duration.py]
+    D --> D5[time<br>_distribution<br>_component.py]
+```
 
+```mermaid
+%% Section 3 : src, csv et data
+graph TD
+    E[src]
+    E --> E1[utils<br>/time.py]
+
+    F[csv]
     F --> F1[airlines.csv]
     F --> F2[airports.csv]
     F --> F3[flights.csv]
     F --> F4[states.csv]
 
-    G --> G1[compressed/airlines.zip]
-    G --> G2[compressed/airports.zip]
-    G --> G3[compressed/flights.zip]
-    G --> G4[compressed/states.zip]
+    G[data]
+    G --> G1[compressed<br>/airlines.zip]
+    G --> G2[compressed<br>/airports.zip]
+    G --> G3[compressed<br>/flights.zip]
+    G --> G4[compressed<br>/states.zip]
 ```
 
-Dans chacun des différents fichiers dans le dossier plot_code, il y a une fonction une fonction *__init__* qui initialise une instance de la classe, puis une fonction *create_component(self)* qui va créer le graphique ou la carte correspondante. Dans le main, nous avons crée le dashboard et chaque composants sont générés grâce à l’appel de *create_component*.
+Dans chacun des différents fichiers dans le dossier plot_code, il y a une fonction *__init__* qui initialise une instance de la classe, puis une fonction *create_component(self)* qui va créer le graphique ou la carte correspondante. Dans le main, nous avons crée le dashboard et chaque composants sont générés grâce à l’appel de *create_component*.
 
 Afin d’ajouter un plot au dashboard,  il suffit de décrire votre composant dans une classe qui sera  située dans le dossier plot_code. Une fois cela fait, il faut rajouter une ligne dans le dashboard en suivant ce qui a été fait précédemment et de rajouter *MaClasse.create_component()* dans le corps du dashboard comme ceci :
 
