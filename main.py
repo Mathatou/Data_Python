@@ -6,6 +6,7 @@ from plot_code.delay_distribution import DelayDistributionComponent
 from plot_code.time_distribution_component import TimeDistributionComponent 
 from plot_code.delay_duration import DelayDurationComponent 
 from plot_code.airline_performance_comparison import AirlinePerformanceComponent
+from plot_code.carrier_market_comparison import CarrierMarketComparisonComponent
 
 def main():
     extract_if_needed()
@@ -18,11 +19,23 @@ def main():
     time_dist = TimeDistributionComponent(app, df)
     delay_duration = DelayDurationComponent(df)
     airline_performance = AirlinePerformanceComponent(app, df, airlines_df)
+    carrier_market_comparison = CarrierMarketComparisonComponent(app, df, "data/geojson/geous.geojson")
+    
 
     app.layout = dbc.Container([
         dbc.Row([
             dbc.Col(html.H1("Flight Analysis Dashboard",
                     className="text-center text-primary mb-4 mt-4"))
+        ]),
+         dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader("Carrier Market Comparison"),
+                    dbc.CardBody(
+                        carrier_market_comparison.create_component()
+                    )
+                ], className="mb-4")
+            ], width=12, lg=6),
         ]),
         dbc.Row([
             dbc.Col([
