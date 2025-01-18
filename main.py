@@ -1,20 +1,23 @@
+from utils.extract_csv import extract_if_needed
 import pandas as pd
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
-from plot_code.airline_delay_comparison import exec as airline_delay_plot
 from plot_code.delay_distribution import DelayDistributionComponent
 from plot_code.time_distribution_component import TimeDistributionComponent 
 from plot_code.delay_duration import DelayDurationComponent 
-from utils.extract_csv import extract_if_needed
+from plot_code.airline_performance_comparison import AirlinePerformanceComponent
+
 def main():
     extract_if_needed()
     df = pd.read_csv("./csv/flights.csv", encoding='latin1')
+    airlines_df = pd.read_csv("./csv/airlines.csv", encoding='latin1')
+
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     
-    delay_comparison = airline_delay_plot(df)
     delay_dist = DelayDistributionComponent(app, df)
     time_dist = TimeDistributionComponent(app, df)
     delay_duration = DelayDurationComponent(df)
+    airline_performance = AirlinePerformanceComponent(app, df, airlines_df)
 
     app.layout = dbc.Container([
         dbc.Row([
@@ -27,6 +30,16 @@ def main():
                     dbc.CardHeader("Flight Delays Duration"),
                     dbc.CardBody(
                         delay_duration.create_component()
+                    )
+                ], className="mb-4")
+            ], width=12, lg=6),
+        ]),
+         dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader("Carrier Delays Comparison"),
+                    dbc.CardBody(
+                        airline_performance.create_component()
                     )
                 ], className="mb-4")
             ], width=12, lg=6),
@@ -50,16 +63,6 @@ def main():
                     )
                 ], className="mb-4")
             ], width=12, lg=6)
-        ]),
-        dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Airline Performance Comparison"),
-                    dbc.CardBody(
-                        dcc.Graph(figure=delay_comparison)
-                    )
-                ], className="mb-4")
-            ], width=12)
         ]),
         dbc.Row([
             dbc.Col(
