@@ -3,10 +3,10 @@ import zipfile
 
 def extract_if_needed():
     csv_to_zip_path_list = [
-        ('csv/flights.csv', 'data/compressed/flights.zip'),
-        ('csv/airlines.csv', 'data/compressed/airlines.zip'),
-        ('csv/states.csv', 'data/compressed/states.zip'),
-        ('csv/airports.csv', 'data/compressed/airports.zip'),
+        ('data/csv/flights.csv', 'data/compressed/flights.zip'),
+        ('data/csv/airlines.csv', 'data/compressed/airlines.zip'),
+        ('data/csv/states.csv', 'data/compressed/states.zip'),
+        ('data/csv/airports.csv', 'data/compressed/airports.zip'),
     ]
     
     for csv_to_zip_path in csv_to_zip_path_list:

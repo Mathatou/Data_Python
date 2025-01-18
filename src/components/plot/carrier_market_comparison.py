@@ -88,7 +88,7 @@ class CarrierMarketComparisonComponent:
 
     def _create_map(self):
         """Creates a map showing the dominant carrier for each state using Folium"""
-        states_df = pd.read_csv("csv/states.csv")
+        states_df = pd.read_csv("data/csv/states.csv")
         state_abbr = dict(zip(states_df['name'], states_df['state']))
 
         self.df['OriginState'] = self.df['OriginState'].replace(state_abbr)
@@ -101,7 +101,7 @@ class CarrierMarketComparisonComponent:
             flights_per_state_carrier.groupby('OriginState')['num_flights'].idxmax()
         ]
 
-        airlines_df = pd.read_csv("csv/airlines.csv")
+        airlines_df = pd.read_csv("data/csv/airlines.csv")
         carrier_name_map = dict(zip(airlines_df['Carrier'], airlines_df['CarrierName']))
         dominant_carriers['CarrierName'] = dominant_carriers['Reporting_Airline'].map(carrier_name_map)
 
