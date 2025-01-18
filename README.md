@@ -52,7 +52,9 @@ graph TD
     D --> D3[delay_distribution.py]
     D --> D4[delay_duration.py]
     D --> D5[time_distribution_component.py]
-
+    D --> D6[flight_distance_distribution.py]
+    D --> D7[flight_distribution.py]
+    
     E --> E1[utils/time.py]
 
     F --> F1[airlines.csv]

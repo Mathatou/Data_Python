@@ -7,30 +7,52 @@ from plot_code.time_distribution_component import TimeDistributionComponent
 from plot_code.delay_duration import DelayDurationComponent 
 from plot_code.airline_performance_comparison import AirlinePerformanceComponent
 from plot_code.carrier_market_comparison import CarrierMarketComparisonComponent
-from map.flight_per_state import exec as flights_per_state
-
+from plot_code.flight_distribution import FlightDistributionComponent
+from plot_code.flight_distance_distribution import FlightDistanceDistribution
 
 def main():
     extract_if_needed()
-    df = pd.read_csv("./csv/flights.csv", encoding='latin1')
-    S_df = pd.read_csv("./csv/states.csv", encoding='latin1')
+   
+    flights_df = pd.read_csv("csv/flights.csv", encoding='latin1')
+    states_df = pd.read_csv("csv/states.csv", encoding='latin1')
+    geojson_path = "data/geojson/geous.geojson"
 
     airlines_df = pd.read_csv("./csv/airlines.csv", encoding='latin1')
 
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     
-    delay_dist = DelayDistributionComponent(app, df)
-    time_dist = TimeDistributionComponent(app, df)
-    delay_duration = DelayDurationComponent(df)
-    airline_performance = AirlinePerformanceComponent(app, df, airlines_df)
-    carrier_market_comparison = CarrierMarketComparisonComponent(app, df, "data/geojson/geous.geojson")
-    map_flight_per_state = flights_per_state(df,S_df)
-
-
+    delay_dist = DelayDistributionComponent(app, flights_df)
+    time_dist = TimeDistributionComponent(app, flights_df)
+    delay_duration = DelayDurationComponent(flights_df)
+    airline_performance = AirlinePerformanceComponent(app, flights_df, airlines_df)
+    carrier_market_comparison = CarrierMarketComparisonComponent(app, flights_df, geojson_path)
+    flight_distribution_component = FlightDistributionComponent(app, flights_df, states_df, geojson_path)
+    flight_distance_chart = FlightDistanceDistribution(app, flights_df)
+    
     app.layout = dbc.Container([
         dbc.Row([
             dbc.Col(html.H1("Flight Analysis Dashboard",
                     className="text-center text-primary mb-4 mt-4"))
+        ]),
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader("Flight Distance Distribution"),
+                    dbc.CardBody(
+                        flight_distance_chart.create_component()
+                    )
+                ], className="mb-4")
+            ], width=12, lg=6),
+        ]),
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader("Flight Distribution Comparison"),
+                    dbc.CardBody(
+                        flight_distribution_component.create_component()
+                    )
+                ], className="mb-4")
+            ], width=12, lg=6),
         ]),
          dbc.Row([
             dbc.Col([
@@ -89,19 +111,6 @@ def main():
                     className="text-center text-muted mb-4"
                 )
             )
-        ]),
-        dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Number of flights per state between 2015 and 2020"),
-                    dbc.CardBody(
-                        html.Iframe(
-                            srcDoc=open("./map/flight_per_state.html","r").read(),
-                            style={"width": "100%", "height": "600px", "border": "none"}                            
-                        )
-                    )
-                ], className="mb-4")
-            ], width=12)
         ]),
     ], fluid=True)
 
