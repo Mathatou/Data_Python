@@ -32,31 +32,31 @@ Nous avons également un fichier *get_data.py* qui télécharge les données (ce
 %% Section 1 : utils
 graph TD
     B[utils]
-    B --> B1[clean_data.py]
+    B --> B1[clean<br>_data.py]
     B --> B2[download.py]
-    B --> B3[extract_csv.py]
+    B --> B3[extract<br>_csv.py]
 ```
 
 ```mermaid
 %% Section 2 : map et plot_code
 graph TD
     C[map]
-    C --> C1[flight_per_state.py]
+    C --> C1[flight<br>_per<br>_state.py]
     C --> C2[geous.geojson]
 
     D[plot_code]
-    D --> D1[airline_performance_comparison.py]
-    D --> D2[carrier_market_comparison.py]
-    D --> D3[delay_distribution.py]
-    D --> D4[delay_duration.py]
-    D --> D5[time_distribution_component.py]
+    D --> D1[airline<br>_performance<br>_comparison.py]
+    D --> D2[carrier<br>_market<br>_comparison.py]
+    D --> D3[delay<br>_distribution.py]
+    D --> D4[delay<br>_duration.py]
+    D --> D5[time<br>_distribution<br>_component.py]
 ```
 
 ```mermaid
 %% Section 3 : src, csv et data
 graph TD
     E[src]
-    E --> E1[utils/time.py]
+    E --> E1[utils<br>/time.py]
 
     F[csv]
     F --> F1[airlines.csv]
@@ -65,10 +65,10 @@ graph TD
     F --> F4[states.csv]
 
     G[data]
-    G --> G1[compressed/airlines.zip]
-    G --> G2[compressed/airports.zip]
-    G --> G3[compressed/flights.zip]
-    G --> G4[compressed/states.zip]
+    G --> G1[compressed<br>/airlines.zip]
+    G --> G2[compressed<br>/airports.zip]
+    G --> G3[compressed<br>/flights.zip]
+    G --> G4[compressed<br>/states.zip]
 ```
 
 Dans chacun des différents fichiers dans le dossier plot_code, il y a une fonction une fonction *__init__* qui initialise une instance de la classe, puis une fonction *create_component(self)* qui va créer le graphique ou la carte correspondante. Dans le main, nous avons crée le dashboard et chaque composants sont générés grâce à l’appel de *create_component*.
