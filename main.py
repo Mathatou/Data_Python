@@ -102,19 +102,6 @@ def main():
                 )
             )
         ]),
-        dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Number of flights per state between 2015 and 2020"),
-                    dbc.CardBody(
-                        html.Iframe(
-                            srcDoc=open("./map/flight_per_state.html","r").read(),
-                            style={"width": "100%", "height": "600px", "border": "none"}                            
-                        )
-                    )
-                ], className="mb-4")
-            ], width=12)
-        ]),
     ], fluid=True)
 
 
