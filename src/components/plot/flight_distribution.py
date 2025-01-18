@@ -86,7 +86,7 @@ class FlightDistributionComponent:
             folium.GeoJson(
                 row["geometry"],
                 style_function=lambda x: {"fillColor": "blue", "color": "black", "weight": 0, "fillOpacity": 0},
-                tooltip=f"For {row['name']}, {row['fullname']}, there are {row['num_flights']} flights between 1987 and 2020"
+                tooltip=f"For {row['name']}, {row['fullname']}, there are {row['num_flights']} flights between 2015 and 2020"
             ).add_to(us_map)
 
         for _, row in usa_states[usa_states["num_flights"] <= 0].iterrows():
