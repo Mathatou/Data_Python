@@ -60,6 +60,7 @@ graph TD
 ```
 
 - [ ]  Expliquer la structure des fichiers (quels sont les différentes fonctions que l’on retrouve dans tous les fichiers)
+- [ ]  Faire une sorte de tuto pour expliquer comment créer un nouveau plot
 
 # Rapport d’Analyse
 
