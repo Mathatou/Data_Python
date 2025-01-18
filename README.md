@@ -89,10 +89,9 @@ Nous déclarons sur l’honneur que le code rendu a été produit par nous-même
 
 # Ressources
 
-[https://ourairports.com/help/data-dictionary.html](https://ourairports.com/help/data-dictionary.html)
-
 En suivant ce lien, vous trouverez le glossaire concernant le fichier **Airports.csv,** renseignant sur les différentes données que l’on peut y retrouver.
-
-[https://dax-cdn.cdn.appdomain.cloud/dax-airline/1.0.1/data-preview/index.html](https://dax-cdn.cdn.appdomain.cloud/dax-airline/1.0.1/data-preview/index.html)
+[airports_glossary.md](airports_glossary.md)
 
 Idem pour celui-ci. Il renseigne sur **Flights.csv.**
+[flights_glossary.md](flights_glossary.md)
+
