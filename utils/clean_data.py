@@ -8,7 +8,7 @@ def main():
 
     airline_prefiltered = "airline_2m.csv"
     airport_prefiltered = "airports.csv"
-    flights_prefiltered = "flights.csv"
+    flights_prefiltered = "airline_2m.csv"
     
     # Read the CSV file
     try:
