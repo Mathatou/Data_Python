@@ -8,8 +8,10 @@ from src.pages.temporal_models import create_layout as create_temporal_models_la
 from src.components.layout.navbar import create_navbar
 from src.components.layout.footer import create_footer
 import pandas as pd
-
+from csv_utils.extract_csv import extract_if_needed
 app = Dash(__name__, external_stylesheets=[dbc.themes.COSMO], suppress_callback_exceptions=True)
+
+extract_if_needed()
 
 flights_df = pd.read_csv("data/csv/flights.csv", encoding='latin1')
 states_df = pd.read_csv("data/csv/states.csv", encoding='latin1')
