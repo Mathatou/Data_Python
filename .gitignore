@@ -1,11 +1,5 @@
-airline_2m.csv
-
 /csv/airports.csv
 /csv/flights.csv
-/map/usa.json
-
 *.pyc
-
 .venv
-
 __pycache__
