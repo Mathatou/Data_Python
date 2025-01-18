@@ -27,77 +27,133 @@ Nous avons également un fichier *get_data.py* qui télécharge les données (ce
 - **States.csv :** Nous avons écris ce fichier regroupant le nom de chaque états (Alabama), leur code (AL) ainsi que leurs coordonnées géographiques (lat, long) .
 
 # Developper Guide
+```
+
+├── airports_glossary.md
+├── csv_utils
+│   ├── clean_data.py
+│   ├── download.py
+│   ├── extract_csv.py
+│   └── __init__.py
+├── data
+│   ├── compressed
+│   │   ├── airlines.zip
+│   │   ├── airports.zip
+│   │   ├── flights.zip
+│   │   └── states.zip
+│   ├── csv
+│   │   ├── airlines.csv
+│   │   ├── airports.csv
+│   │   ├── flights.csv
+│   │   └── states.csv
+│   └── geojson
+│       └── geous.geojson
+├── flights_glossary.md
+├── get_data.py
+├── main.py
+├── README.md
+├── requirements.txt
+└── src
+    ├── components
+    │   ├── layout
+    │   │   ├── footer.py
+    │   │   └── navbar.py
+    │   └── plot
+    │       ├── airline_performance_comparison.py
+    │       ├── carrier_market_comparison.py
+    │       ├── delay_distribution.py
+    │       ├── delay_duration.py
+    │       ├── flight_distance_distribution.py
+    │       ├── flight_distribution.py
+    │       ├── __init__.py
+    │       └── time_distribution_component.py
+    ├── pages
+    │   ├── airline_performance.py
+    │   ├── delay_analysis.py
+    │   ├── route_analysis.py
+    │   └── temporal_models.py
+    └── utils
+        └── time.py
+```
+
 
 ```mermaid
-%% Section 1 : utils
+%% Section 1 : csv_utils
 graph TD
-    B[utils]
-    B --> B1[clean<br>_data.py]
-    B --> B2[download.py]
-    B --> B3[extract<br>_csv.py]
+    A[csv_utils]
+    A --> A1[clean_data.py]
+    A --> A2[download.py]
 ```
 
 ```mermaid
-%% Section 2 : map et plot_code
+%% Section 3 : src/components/layout
 graph TD
-    C[map]
-    C --> C1[flight<br>_per<br>_state.py]
-    C --> C2[geous.geojson]
-
-    D[plot_code]
-    D --> D1[airline<br>_performance<br>_comparison.py]
-    D --> D2[carrier<br>_market<br>_comparison.py]
-    D --> D3[delay<br>_distribution.py]
-    D --> D4[delay<br>_duration.py]
-    D --> D5[time<br>_distribution<br>_component.py]
+    C[layout]
+    C --> C1[footer.py]
+    C --> C2[navbar.py]
 ```
 
 ```mermaid
-%% Section 3 : src, csv et data
+%% Section 4 : src/pages
 graph TD
-    E[src]
-    E --> E1[utils<br>/time.py]
+    D[pages]
+    D --> D1[airline_performance.py]
+    D1 --> P1[airline_performance_comparison.py]
+    D1 --> P2[carrier_market_comparison.py]
 
-    F[csv]
-    F --> F1[airlines.csv]
-    F --> F2[airports.csv]
-    F --> F3[flights.csv]
-    F --> F4[states.csv]
+    D --> D2[delay_analysis.py]
+    D2 --> P3[delay_distribution.py]
+    D2 --> P4[delay_duration.py]
 
-    G[data]
-    G --> G1[compressed<br>/airlines.zip]
-    G --> G2[compressed<br>/airports.zip]
-    G --> G3[compressed<br>/flights.zip]
-    G --> G4[compressed<br>/states.zip]
+    D --> D3[route_analysis.py]
+    D3 --> P5[flight_distance_distribution.py]
+    D3 --> P6[flight_distribution.py]
+
+    D --> D4[temporal_models.py]
+    D4 --> P7[time_distribution_component.py]
+```
+
+```mermaid
+%% Section 5 : data
+graph TD
+    E[data]
+    E --> E1[compressed]
+    E1 --> E11[airlines.zip]
+    E1 --> E12[airports.zip]
+    E1 --> E13[flights.zip]
+    E1 --> E14[states.zip]
+    E --> E2[csv]
+    E2 --> E21[airlines.csv]
+    E2 --> E22[airports.csv]
+    E2 --> E23[flights.csv]
+    E2 --> E24[states.csv]
+    E --> E3[geojson]
+    E3 --> E31[geous.geojson]
+```
+
+```mermaid
+%% Section 7 : Root Files
+graph TD
+    G[Root Files]
+    G --> G1[airports_glossary.md]
+    G --> G2[flights_glossary.md]
+    G --> G3[get_data.py]
+    G --> G4[main.py]
+    G --> G5[README.md]
+    G --> G6[requirements.txt]
 ```
 
 Dans chacun des différents fichiers dans le dossier plot_code, il y a une fonction *__init__* qui initialise une instance de la classe, puis une fonction *create_component(self)* qui va créer le graphique ou la carte correspondante. Dans le main, nous avons crée le dashboard et chaque composants sont générés grâce à l’appel de *create_component*.
 
-Afin d’ajouter un plot au dashboard,  il suffit de décrire votre composant dans une classe qui sera  située dans le dossier plot_code. Une fois cela fait, il faut rajouter une ligne dans le dashboard en suivant ce qui a été fait précédemment et de rajouter *MaClasse.create_component()* dans le corps du dashboard comme ceci :
+Afin d’ajouter un plot au dashboard,  il suffit de décrire votre composant dans une classe qui sera  située dans le dossier plot_code. Une fois cela fait, il faut rajouter une ligne dans le dashboard en suivant ce qui a été fait précédemment et de rajouter *MaClasse.create_component()* dans le corps du dashboard.
 
-```python
-dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Flights Distribution by Time Period"),
-                    dbc.CardBody(
-                        time_dist.create_component()
-                    )
-                ], className="mb-4")
-            ], width=12, lg=6)
-        ])
-```
 
 # Rapport d’Analyse
 
-Suite à nos différentes analyses, on a pu arriver à multiples conclusions : 
-
-### Performance des Compagnies Aériennes
-
-- Premièrement, grâce à la première carte et à son graphique circulaire associé, on remarque que **Delta Air Lines Inc.** est la compagnie aérienne américaine la plus empruntée (172 251 vols entre 1987 et 2020)
-- Deuxièmement, nous avons un graphique en barres qui donne des indications sur les performances des différentes compagnies aériennes. Le graphique nous renseigne sur le retard moyen ainsi que sur le taux d’annulation de vols. On voit que **Envoy Air** est la compagnie qui annule le plus ses vols et que **JetBlue Airways** est la compagnie ayant en moyenne, le plus de retards.
+Voici le compte rendu de nos analyses. Il est important de noter que les informations extraites de ce rapport ne sont pas complètement fiables, car bien que le jeu de données provienne d'une source officielle des États-Unis, les données que nous avons utilisées constituent un échantillon d'un ensemble plus large. De plus, un tri a été effectué pour ne conserver que les vols commerciaux, mais il est possible que certaines données liées à d'autres types de vols aient été incluses. Par conséquent, les résultats doivent être interprétés avec prudence, en tenant compte de ces limitations dans la précision des données utilisées.
 
 ### Analyse des Retards
+L’analyse des retards révèle des tendances intéressantes qui nous permettent de mieux comprendre les moments où les passagers peuvent s'attendre à des perturbations dans leurs horaires de vol.
 
 - Grâce à l’avant-dernier graphique, on observe que le nombre de retards commence à augmenter progressivement à partir des premières heures du matin (vers 5h-6h).
 - Les retards atteignent un **pic en milieu ou fin de journée**, probablement entre 15h et 18h. Cela pourrait être lié à l'effet d'accumulation des retards, où les vols retardés en matinée impactent les vols ultérieurs.
@@ -106,9 +162,34 @@ Suite à nos différentes analyses, on a pu arriver à multiples conclusions :
 
 ### Analyse des Itinéraires
 
-- Sur la première carte, on remarque une concentration élevée sur certains États, les états plus foncés (comme New York ou la Californie) indiquent une fréquence de vols plus élevée. Cela est probablement lié à la densité de population élevée et à la présence de grands hubs aériens (comme New York City et Los Angeles).
-- On comprend que les côtes sont très importantes aux États-Unis, elles montrent une plus forte densité de vols comparée au centre du pays. Cela reflète la tendance générale des grandes métropoles et zones côtières à attirer plus de trafic aérien.
-- Les États plus clairs (ex. Dakota du Nord, Montana) ont moins de vols en raison de leur faible densité de population et leur faible attractivité touristique ou économique à l'échelle nationale.
+Les graphiques relatifs aux itinéraires aériens offrent un aperçu précieux de la répartition des vols à travers les États-Unis, permettant de comprendre les zones de forte et faible densité de trafic aérien.
+
+Sur la première carte, une concentration élevée de vols est clairement visible dans certains États. Les zones plus foncées, comme New York et la Californie, indiquent une fréquence de vols plus élevée. Cette tendance s’explique principalement par la forte densité de population et la présence de grands hubs aériens tels que New York City et Los Angeles, qui sont des points de connexion clés pour les vols nationaux et internationaux.
+
+De plus, il est évident que les zones côtières des États-Unis, comme la côte Est et la côte Ouest, génèrent un volume de trafic aérien bien supérieur comparé au centre du pays. Cela reflète une réalité économique et démographique où les grandes métropoles et les zones littorales attirent une plus grande concentration de passagers, que ce soit pour des raisons économiques, touristiques ou professionnelles. Les centres économiques, comme San Francisco, Miami, et Washington D.C., sont donc des points névralgiques du réseau aérien.
+
+À l’inverse, les États plus clairs, tels que le Dakota du Nord ou le Montana, présentent une densité de vols bien plus faible. Cela est dû à leur faible densité de population et à une attractivité touristique ou économique limitée à l’échelle nationale. Ces régions, plus rurales, voient moins de demande en termes de transport aérien, ce qui se traduit par un nombre de vols moins important.
+
+### Performance des Compagnies Aériennes
+
+Les graphiques ci-dessous offrent une vue d'ensemble détaillée sur la dynamique actuelle du marché aérien aux États-Unis, permettant non seulement de mieux comprendre les tendances de fréquentation, mais aussi d’aiguiller les voyageurs sur le choix de leur compagnie aérienne.
+
+Delta Air Lines Inc. se distingue comme la compagnie aérienne américaine la plus empruntée, avec un total de 172 251 vols réalisés entre 2015 et 2020, selon la première carte et son graphique circulaire associé. Cette prédominance de Delta dans le ciel américain souligne la position de leader de la compagnie, qui bénéficie d'un réseau étendu et d'une forte demande sur ses liaisons.
+
+Ensuite, le graphique en barres qui analyse les performances des différentes compagnies aériennes révèle des données cruciales sur la ponctualité et le taux d’annulation des vols. On y apprend que Envoy Air enregistre le plus grand nombre d'annulations, ce qui peut être un facteur dissuasif pour les voyageurs cherchant à éviter les désagréments. En revanche, JetBlue Airways se distingue par un taux de retard moyen élevé, ce qui pourrait être un critère important pour ceux qui privilégient la ponctualité.
+
+### Analyse temporelle 
+#### Distribution des départs d'avions au cours de la journée
+Dans ces graphiques, plusieurs observations intéressantes émergent. D'une part, bien que cela puisse sembler contre-intuitif, la majorité des départs d'avions a lieu tôt le matin. Ensuite, le volume de départs se stabilise au cours de la journée avant de diminuer progressivement en soirée. Ce phénomène peut s'expliquer par des contraintes opérationnelles et logistiques, telles que la nécessité pour les avions d'effectuer des rotations optimales sur une journée ou encore les préférences des voyageurs pour des départs matinaux, notamment pour les trajets longs.
+
+#### Variation du trafic aérien par jour de la semaine
+De plus, contrairement à ce que l'on pourrait supposer, le samedi est significativement moins chargé en termes de trafic aérien. Cela peut être dû à des préférences de voyage des passagers, qui privilégient souvent les départs en semaine pour des déplacements professionnels, ou les vendredis et dimanches pour des voyages de loisir ou des week-ends prolongés.
+
+#### Fluctuations mensuelles des vols
+Concernant la répartition annuelle, les mois du début de l'année se distinguent par un volume de vols plus élevé. Cela pourrait être lié à plusieurs facteurs, tels que les vacances hivernales, la saison des fêtes qui s'étend jusqu'à janvier, ou encore le retour des voyageurs vers leur domicile après les congés de fin d'année.
+
+#### Tendances sur plusieurs années
+Lorsque l'on examine les tendances sur plusieurs années, une dynamique marquante est observée : le nombre de vols était en constante augmentation jusqu'en 2019. Cette croissance soutenue reflète l'expansion de l'industrie aérienne, notamment grâce à la hausse de la demande mondiale de voyages et à la démocratisation du transport aérien. Cependant, en 2020, une rupture brutale est visible en raison des restrictions liées à la pandémie de COVID-19, qui ont entraîné une chute drastique du trafic aérien. Les confinements, les fermetures de frontières et les mesures sanitaires ont contribué à cette diminution historique, marquant une période sans précédent dans l'histoire récente de l'aviation.
 
 # Copyright
 
