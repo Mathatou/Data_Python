@@ -116,7 +116,6 @@ class FlightDistanceDistribution:
             plot_bgcolor='white',
             hoverlabel=dict(bgcolor="white"),
             margin=dict(t=100, l=80, r=40, b=120),
-            height=700
         )
 
         return bar_chart

@@ -41,7 +41,7 @@ class DelayDistributionComponent:
                 return self._create_daily_distribution()
             elif selected_period == 'month':
                 return self._create_monthly_distribution()
-            else:  # year
+            else:  
                 return self._create_yearly_distribution()
 
     def _get_delay_categories(self):
@@ -58,7 +58,7 @@ class DelayDistributionComponent:
         }
 
     def _create_time_distribution(self):
-        """Creates histogram for delay distribution by time of day"""
+        """Creates histogram for Trends in Delays Over the Day"""
         delays = self._get_delay_categories()
         fig = go.Figure()
         
@@ -89,7 +89,7 @@ class DelayDistributionComponent:
 
         tick_vals = [t.strftime('%H:%M') for t in pd.date_range("00:00", "23:59", freq="30min").time]
 
-        self._update_layout(fig, "Distribution of Flight Delays by Time of Day",
+        self._update_layout(fig, "Distribution of Delays Throughout the Day",
                         "Scheduled Departure Time", "Number of Flights",
                         stack=True, tick_vals=tick_vals)
         

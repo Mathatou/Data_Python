@@ -43,7 +43,7 @@ class TimeDistributionComponent:
                 return self._create_daily_distribution()
             elif selected_period == 'months':
                 return self._create_monthly_distribution()
-            else:  # years
+            else:  
                 return self._create_yearly_distribution()
 
     def _create_hourly_distribution(self):

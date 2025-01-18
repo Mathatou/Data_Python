@@ -1,122 +1,48 @@
-from csv_utils.extract_csv import extract_if_needed
-import pandas as pd
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
-from src.components.plot.delay_distribution import DelayDistributionComponent
-from src.components.plot.time_distribution_component import TimeDistributionComponent 
-from src.components.plot.delay_duration import DelayDurationComponent 
-from src.components.plot.airline_performance_comparison import AirlinePerformanceComponent
-from src.components.plot.carrier_market_comparison import CarrierMarketComparisonComponent
-from src.components.plot.flight_distribution import FlightDistributionComponent
-from src.components.plot.flight_distance_distribution import FlightDistanceDistribution
+from dash.dependencies import Input, Output  
+from src.pages.delay_analysis import create_layout as create_delay_analysis_layout
+from src.pages.route_analysis import create_layout as create_route_analysis_layout
+from src.pages.airline_performance import create_layout as create_airline_performance_layout
+from src.pages.temporal_models import create_layout as create_temporal_models_layout
+from src.components.layout.navbar import create_navbar
+from src.components.layout.footer import create_footer
+import pandas as pd
 
-def main():
-    extract_if_needed()
-   
-    flights_df = pd.read_csv("data/csv/flights.csv", encoding='latin1')
-    states_df = pd.read_csv("data/csv/states.csv", encoding='latin1')
-    geojson_path = "data/geojson/geous.geojson"
+app = Dash(__name__, external_stylesheets=[dbc.themes.COSMO], suppress_callback_exceptions=True)
 
-    airlines_df = pd.read_csv("./data/csv/airlines.csv", encoding='latin1')
+flights_df = pd.read_csv("data/csv/flights.csv", encoding='latin1')
+states_df = pd.read_csv("data/csv/states.csv", encoding='latin1')
+geojson_path = "data/geojson/geous.geojson"
+airlines_df = pd.read_csv("data/csv/airlines.csv", encoding='latin1')
 
-    app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-    
-    delay_dist = DelayDistributionComponent(app, flights_df)
-    time_dist = TimeDistributionComponent(app, flights_df)
-    delay_duration = DelayDurationComponent(flights_df)
-    airline_performance = AirlinePerformanceComponent(app, flights_df, airlines_df)
-    carrier_market_comparison = CarrierMarketComparisonComponent(app, flights_df, geojson_path)
-    flight_distribution_component = FlightDistributionComponent(app, flights_df, states_df, geojson_path)
-    flight_distance_chart = FlightDistanceDistribution(app, flights_df)
-    
-    app.layout = dbc.Container([
-        dbc.Row([
-            dbc.Col(html.H1("Flight Analysis Dashboard",
-                    className="text-center text-primary mb-4 mt-4"))
-        ]),
-        dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Flight Distance Distribution"),
-                    dbc.CardBody(
-                        flight_distance_chart.create_component()
-                    )
-                ], className="mb-4")
-            ], width=12, lg=6),
-        ]),
-        dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Flight Distribution Comparison"),
-                    dbc.CardBody(
-                        flight_distribution_component.create_component()
-                    )
-                ], className="mb-4")
-            ], width=12, lg=6),
-        ]),
-         dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Carrier Market Comparison"),
-                    dbc.CardBody(
-                        carrier_market_comparison.create_component()
-                    )
-                ], className="mb-4")
-            ], width=12, lg=6),
-        ]),
-        dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Flight Delays Duration"),
-                    dbc.CardBody(
-                        delay_duration.create_component()
-                    )
-                ], className="mb-4")
-            ], width=12, lg=6),
-        ]),
-         dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Carrier Delays Comparison"),
-                    dbc.CardBody(
-                        airline_performance.create_component()
-                    )
-                ], className="mb-4")
-            ], width=12, lg=6),
-        ]),
-        dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Flight Delays Distribution"),
-                    dbc.CardBody(
-                        delay_dist.create_component()
-                    )
-                ], className="mb-4")
-            ], width=12, lg=6),
-        ]),
-         dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Flights Distribution by Time Period"),
-                    dbc.CardBody(
-                        time_dist.create_component()
-                    )
-                ], className="mb-4")
-            ], width=12, lg=6)
-        ]),
-        dbc.Row([
-            dbc.Col(
-                html.Footer(
-                    "Flight Analysis Dashboard - Created with Dash",
-                    className="text-center text-muted mb-4"
-                )
-            )
-        ]),
-    ], fluid=True)
+delay_analysis_layout = create_delay_analysis_layout(app, flights_df)
+route_analysis_layout = create_route_analysis_layout(app, flights_df, states_df, geojson_path)
+airline_performance_layout = create_airline_performance_layout(app, flights_df, airlines_df, geojson_path)
+temporal_models_layout = create_temporal_models_layout(app, flights_df)
 
+app.layout = html.Div([
+    dcc.Location(id='url', refresh=False), 
+    create_navbar(app),  
+    html.Div(id='page-content'),  
+    create_footer() 
+])
 
-    return app
+@app.callback(
+    Output('page-content', 'children'), 
+    [Input('url', 'pathname')]  
+)
+def display_page(pathname):
+    if pathname == '/delay-analysis':
+        return delay_analysis_layout
+    elif pathname == '/route-analysis':
+        return route_analysis_layout
+    elif pathname == '/airline-performance':
+        return airline_performance_layout
+    elif pathname == '/temporal-models':
+        return temporal_models_layout
+    else:
+        return delay_analysis_layout 
 
-if __name__ == "__main__":
-    app = main()
+if __name__ == '__main__':
     app.run_server(debug=True, port=8050)
