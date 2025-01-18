@@ -71,7 +71,7 @@ graph TD
     G --> G4[compressed<br>/states.zip]
 ```
 
-Dans chacun des différents fichiers dans le dossier plot_code, il y a une fonction une fonction *__init__* qui initialise une instance de la classe, puis une fonction *create_component(self)* qui va créer le graphique ou la carte correspondante. Dans le main, nous avons crée le dashboard et chaque composants sont générés grâce à l’appel de *create_component*.
+Dans chacun des différents fichiers dans le dossier plot_code, il y a une fonction *__init__* qui initialise une instance de la classe, puis une fonction *create_component(self)* qui va créer le graphique ou la carte correspondante. Dans le main, nous avons crée le dashboard et chaque composants sont générés grâce à l’appel de *create_component*.
 
 Afin d’ajouter un plot au dashboard,  il suffit de décrire votre composant dans une classe qui sera  située dans le dossier plot_code. Une fois cela fait, il faut rajouter une ligne dans le dashboard en suivant ce qui a été fait précédemment et de rajouter *MaClasse.create_component()* dans le corps du dashboard comme ceci :
 
