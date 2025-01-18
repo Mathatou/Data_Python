@@ -29,40 +29,42 @@ Nous avons également un fichier *get_data.py* qui télécharge les données (ce
 # Developper Guide
 
 ```mermaid
+%% Section 1 : utils
 graph TD
-    A[Projet Data_Python]
-
-    %% Modules principaux
-    A --> B[utils]
-    A --> C[map]
-    A --> D[plot_code]
-    A --> E[src]
-    A --> F[csv]
-    A --> G[data]
-
-    %% Détails des fichiers dans chaque module
+    B[utils]
     B --> B1[clean_data.py]
     B --> B2[download.py]
     B --> B3[extract_csv.py]
+```
 
+```mermaid
+%% Section 2 : map et plot_code
+graph TD
+    C[map]
     C --> C1[flight_per_state.py]
     C --> C2[geous.geojson]
 
+    D[plot_code]
     D --> D1[airline_performance_comparison.py]
     D --> D2[carrier_market_comparison.py]
     D --> D3[delay_distribution.py]
     D --> D4[delay_duration.py]
     D --> D5[time_distribution_component.py]
-    D --> D6[flight_distance_distribution.py]
-    D --> D7[flight_distribution.py]
-    
+```
+
+```mermaid
+%% Section 3 : src, csv et data
+graph TD
+    E[src]
     E --> E1[utils/time.py]
 
+    F[csv]
     F --> F1[airlines.csv]
     F --> F2[airports.csv]
     F --> F3[flights.csv]
     F --> F4[states.csv]
 
+    G[data]
     G --> G1[compressed/airlines.zip]
     G --> G2[compressed/airports.zip]
     G --> G3[compressed/flights.zip]
