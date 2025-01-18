@@ -3,9 +3,7 @@ import plotly.graph_objects as go
 from dash import html, dcc
 from dash.dependencies import Input, Output
 import geopandas as gpd
-import dash_leaflet as dl
 import folium
-import os
 
 class CarrierMarketComparisonComponent:
     def __init__(self, app, df, states_geojson_path):
@@ -29,7 +27,7 @@ class CarrierMarketComparisonComponent:
                 clearable=False,
                 className='mb-3'
             ),
-            html.Div(id=f'{self.component_id}-graph-container')  
+            html.Div(id=f'{self.component_id}-graph-container')
         ])
 
     def _register_callbacks(self):
@@ -47,7 +45,7 @@ class CarrierMarketComparisonComponent:
     def _create_pie_chart(self):
         """Creates a pie chart to compare the number of flights by carrier"""
         flights_per_carrier = self.df.groupby('Reporting_Airline').size().reset_index(name='num_flights')
-        
+
         colors = [
             '#1f77b4',  
             '#ff7f0e',  
@@ -60,19 +58,19 @@ class CarrierMarketComparisonComponent:
             '#bcbd22',  
             '#17becf'   
         ]
-        
+
         pie_chart = go.Figure()
-        
+
         pie_chart.add_trace(go.Pie(
             labels=flights_per_carrier['Reporting_Airline'],
             values=flights_per_carrier['num_flights'],
             name='Flights',
             hovertemplate="<b>%{label}</b><br>Number of Flights: %{value:,.0f}<br>Percentage: %{percent}<extra></extra>",
             textinfo='percent+label',
-            hole=0.4,  
-            marker=dict(colors=colors)  
+            hole=0.4,
+            marker=dict(colors=colors)
         ))
-        
+
         pie_chart.update_layout(
             title=dict(
                 text='Flight Distribution by Carrier',
@@ -83,66 +81,56 @@ class CarrierMarketComparisonComponent:
             hoverlabel=dict(bgcolor="white"),
             margin=dict(t=100, l=80, r=80, b=80),
             height=700,
-            showlegend=False  
+            showlegend=False
         )
-        
+
         return pie_chart
-    
 
     def _create_map(self):
         """Creates a map showing the dominant carrier for each state using Folium"""
         states_df = pd.read_csv("csv/states.csv")
-        
-        state_abbr = dict(zip(states_df['State'], states_df['Abbreviation']))
-        
+        state_abbr = dict(zip(states_df['name'], states_df['state']))
+
         self.df['OriginState'] = self.df['OriginState'].replace(state_abbr)
-        
+
         usa_states = gpd.read_file(self.states_geojson_path)
-        
+
         flights_per_state_carrier = self.df.groupby(['OriginState', 'Reporting_Airline']).size().reset_index(name='num_flights')
-        
+
         dominant_carriers = flights_per_state_carrier.loc[
             flights_per_state_carrier.groupby('OriginState')['num_flights'].idxmax()
         ]
-        
+
         airlines_df = pd.read_csv("csv/airlines.csv")
         carrier_name_map = dict(zip(airlines_df['Carrier'], airlines_df['CarrierName']))
-        
         dominant_carriers['CarrierName'] = dominant_carriers['Reporting_Airline'].map(carrier_name_map)
-        
+
         usa_states = usa_states.merge(
             dominant_carriers,
             left_on="name",
             right_on="OriginState",
             how="left"
         )
-        
-        usa_states = usa_states.merge(
-            states_df,
-            left_on="name",
-            right_on="Abbreviation",
-            how="left"
-        )
-        
+
         us_map = folium.Map(location=[37.0902, -95.7129], tiles='OpenStreetMap', zoom_start=4)
-        
+
         title_html = """
-            <h3 style='font-size: 1.5em; '>
+            <h3 style='font-size: 1.5em;'>
                 Dominant Carrier by State
             </h3>
         """
         us_map.get_root().html.add_child(folium.Element(title_html))
-        
+
         folium.GeoJson(
             usa_states,
             style_function=lambda feature: {
-                "fillColor": "white",  
-                "color": "black",  
-                "weight": 0.5,  
+                "fillColor": "white",
+                "color": "black",
+                "weight": 0.5,
                 "fillOpacity": 0.7,
             },
             tooltip=folium.GeoJsonTooltip(
-                fields=['State', 'CarrierName', 'num_flights'],  
+                fields=['name', 'CarrierName', 'num_flights'],
                 aliases=['State:', 'Dominant Carrier:', 'Number of Flights:'],
                 localize=True,
                 sticky=True,
@@ -154,7 +142,7 @@ class CarrierMarketComparisonComponent:
                 """
             ),
             popup=folium.GeoJsonPopup(
-                fields=['State', 'CarrierName', 'num_flights'],  
+                fields=['name', 'CarrierName', 'num_flights'],
                 aliases=['State:', 'Dominant Carrier:', 'Number of Flights:'],
                 localize=True,
                 labels=True,
@@ -165,9 +153,9 @@ class CarrierMarketComparisonComponent:
                 """
             )
         ).add_to(us_map)
-        
-        carrier_names_group = folium.FeatureGroup(name="Carrier Names", show=True) 
-        
+
+        carrier_names_group = folium.FeatureGroup(name="Carrier Names", show=True)
+
         for _, row in usa_states.iterrows():
             if pd.notna(row['CarrierName']):
                 centroid = row['geometry'].centroid
@@ -176,7 +164,7 @@ class CarrierMarketComparisonComponent:
                     icon=folium.DivIcon(
                         html=f"""
                             <div style='
-                                font-size: 10px;  
+                                font-size: 10px;
                                 font-weight: bold;
                                 text-align: center;
                                 line-height: 1.5;
@@ -191,13 +179,13 @@ class CarrierMarketComparisonComponent:
                         """
                     )
                 ).add_to(carrier_names_group)
-        
+
         carrier_names_group.add_to(us_map)
-        
+
         folium.LayerControl().add_to(us_map)
-        
-        map_html = us_map.get_root().render()        
+
+        map_html = us_map.get_root().render()
         return html.Iframe(
-            srcDoc=map_html,  
-            style={'width': '100%', 'height': '650px'} 
+            srcDoc=map_html,
+            style={'width': '100%', 'height': '650px'}
         )
