@@ -19,20 +19,20 @@ def download(url, filename):
 
     try:
         with requests.get(url, stream=True, allow_redirects=True) as response:
-            response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+            response.raise_for_status() 
             with open(file_path, 'wb') as file:
-                for chunk in response.iter_content(chunk_size=8192):  # Adjust chunk size as needed
+                for chunk in response.iter_content(chunk_size=8192):  
                     file.write(chunk)
 
         process_downloaded_file(file_path, final_folder)
-        cleanup_folder(download_folder)  # Clean up AFTER processing
+        cleanup_folder(download_folder)  
 
     except requests.exceptions.RequestException as e:
         print(f"Error during download: {e}")
-        cleanup_folder(download_folder, error=True) # Clean up even if there is an error
+        cleanup_folder(download_folder, error=True) 
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-        cleanup_folder(download_folder, error=True) # Clean up even if there is an error
+        cleanup_folder(download_folder, error=True) 
 
 def process_downloaded_file(file_path, final_folder):
     filename = os.path.basename(file_path)
@@ -52,10 +52,10 @@ def cleanup_folder(download_folder, error=False):
     try:
         if error:
             print(f"Cleaning up download folder {download_folder} due to an error.")
-        shutil.rmtree(download_folder) # Use shutil for robust removal
+        shutil.rmtree(download_folder)
         print(f"Download folder '{download_folder}' cleaned up.")
     except FileNotFoundError:
-        if not error: # Only print if it's not an error cleanup
+        if not error:
             print(f"Warning: Download folder '{download_folder}' not found during cleanup.")
     except OSError as e:
         print(f"Error cleaning up download folder: {e}")
