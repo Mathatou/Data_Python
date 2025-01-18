@@ -85,7 +85,7 @@ class AirlinePerformanceComponent:
             x=airline_stats['CarrierName'],
             y=airline_stats[sort_by],
             name=f'{sort_by.replace("_", " ")}',
-            marker_color='#4682B4',  # Steel blue
+            marker_color='#4682B4',  
             hovertemplate="<b>%{x}</b><br>" +
                          f"{sort_by.replace('_', ' ')}: %{{y:.1f}}<br>" +
                          "Total Flights: %{customdata[0]}<br>" +
