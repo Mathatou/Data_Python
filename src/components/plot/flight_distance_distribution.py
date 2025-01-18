@@ -35,7 +35,7 @@ class FlightDistanceDistribution:
                             {'label': '500 miles', 'value': 500},
                             {'label': '1000 miles', 'value': 1000}
                         ],
-                        value=500, 
+                        value=100, 
                         clearable=False,
                         className='mb-3'
                     )

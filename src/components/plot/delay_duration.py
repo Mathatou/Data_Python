@@ -80,9 +80,12 @@ class DelayDurationComponent:
                 ),
                 showgrid=True,
                 gridcolor='rgba(211, 211, 211, 0.5)',
-                range=[14, self.max_delay],
-                dtick=1,
-                tick0=14
+                range=[14, self.max_delay], 
+                dtick=5,  
+                tickangle=-45,  
+                tickmode='linear',  
+                tick0=15,  
+                tickfont=dict(size=12) 
             ),
             yaxis=dict(
                 title=dict(
