@@ -90,8 +90,8 @@ Nous déclarons sur l’honneur que le code rendu a été produit par nous-même
 # Ressources
 
 En suivant ce lien, vous trouverez le glossaire concernant le fichier **Airports.csv,** renseignant sur les différentes données que l’on peut y retrouver.
-[airports_glossary.md](airports_glossary.md)
+[Glossaire de airports.csv](airports_glossary.md)
 
 Idem pour celui-ci. Il renseigne sur **Flights.csv.**
-[flights_glossary.md](flights_glossary.md)
+[Glossaire de flights.csv](flights_glossary.md)
 
