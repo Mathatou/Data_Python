@@ -29,38 +29,44 @@ python main.py
 
 ```mermaid
 graph TD
-    %% Agrandir le graphique avec des sous-groupes
-    subgraph Projet_Data_Python[Projet Data_Python]
-        %% Modules principaux
-        B[utils] --> B1[clean_data.py]
-        B --> B2[download.py]
-        B --> B3[extract_csv.py]
+    A[Projet Data_Python]
 
-        C[map] --> C1[flight_per_state.py]
-        C --> C2[geous.geojson]
+    %% Modules principaux
+    A --> B[utils]
+    A --> C[map]
+    A --> D[plot_code]
+    A --> E[src]
+    A --> F[csv]
+    A --> G[data]
 
-        D[plot_code] --> D1[airline_performance_comparison.py]
-        D --> D2[carrier_market_comparison.py]
-        D --> D3[delay_distribution.py]
-        D --> D4[delay_duration.py]
-        D --> D5[time_distribution_component.py]
+    %% Détails des fichiers dans chaque module
+    B --> B1[clean_data.py]
+    B --> B2[download.py]
+    B --> B3[extract_csv.py]
 
-        E[src] --> E1[utils/time.py]
+    C --> C1[flight_per_state.py]
+    C --> C2[geous.geojson]
 
-        F[csv] --> F1[airlines.csv]
-        F --> F2[airports.csv]
-        F --> F3[flights.csv]
-        F --> F4[states.csv]
+    D --> D1[airline_performance_comparison.py]
+    D --> D2[carrier_market_comparison.py]
+    D --> D3[delay_distribution.py]
+    D --> D4[delay_duration.py]
+    D --> D5[time_distribution_component.py]
 
-        G[data] --> G1[compressed/airlines.zip]
-        G --> G2[compressed/airports.zip]
-        G --> G3[compressed/flights.zip]
-        G --> G4[compressed/states.zip]
-    end
+    E --> E1[utils/time.py]
+
+    F --> F1[airlines.csv]
+    F --> F2[airports.csv]
+    F --> F3[flights.csv]
+    F --> F4[states.csv]
+
+    G --> G1[compressed/airlines.zip]
+    G --> G2[compressed/airports.zip]
+    G --> G3[compressed/flights.zip]
+    G --> G4[compressed/states.zip]
 ```
 
 - [ ]  Expliquer la structure des fichiers (quels sont les différentes fonctions que l’on retrouve dans tous les fichiers)
-- [ ]  Faire une sorte de tuto pour expliquer comment créer un nouveau plot
 
 # Rapport d’Analyse
 
