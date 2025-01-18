@@ -3,7 +3,5 @@ airline_2m.csv
 *.csv
 
 *.pyc
-
 .venv
-
 __pycache__
