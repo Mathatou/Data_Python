@@ -1,23 +1,23 @@
-from utils.extract_csv import extract_if_needed
+from csv_utils.extract_csv import extract_if_needed
 import pandas as pd
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
-from plot_code.delay_distribution import DelayDistributionComponent
-from plot_code.time_distribution_component import TimeDistributionComponent 
-from plot_code.delay_duration import DelayDurationComponent 
-from plot_code.airline_performance_comparison import AirlinePerformanceComponent
-from plot_code.carrier_market_comparison import CarrierMarketComparisonComponent
-from plot_code.flight_distribution import FlightDistributionComponent
-from plot_code.flight_distance_distribution import FlightDistanceDistribution
+from src.components.plot.delay_distribution import DelayDistributionComponent
+from src.components.plot.time_distribution_component import TimeDistributionComponent 
+from src.components.plot.delay_duration import DelayDurationComponent 
+from src.components.plot.airline_performance_comparison import AirlinePerformanceComponent
+from src.components.plot.carrier_market_comparison import CarrierMarketComparisonComponent
+from src.components.plot.flight_distribution import FlightDistributionComponent
+from src.components.plot.flight_distance_distribution import FlightDistanceDistribution
 
 def main():
     extract_if_needed()
    
-    flights_df = pd.read_csv("csv/flights.csv", encoding='latin1')
-    states_df = pd.read_csv("csv/states.csv", encoding='latin1')
+    flights_df = pd.read_csv("data/csv/flights.csv", encoding='latin1')
+    states_df = pd.read_csv("data/csv/states.csv", encoding='latin1')
     geojson_path = "data/geojson/geous.geojson"
 
-    airlines_df = pd.read_csv("./csv/airlines.csv", encoding='latin1')
+    airlines_df = pd.read_csv("./data/csv/airlines.csv", encoding='latin1')
 
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     

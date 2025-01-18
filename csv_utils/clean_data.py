@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 def main():
-    final_folder = "./csv/"
+    final_folder = "./data/csv/"
     os.makedirs(final_folder, exist_ok=True)
     
 

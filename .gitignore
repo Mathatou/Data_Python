@@ -1,5 +1,6 @@
-/csv/*
-/map/geous.json
+airline_2m.csv
+
+*.csv
 
 *.pyc
 .venv

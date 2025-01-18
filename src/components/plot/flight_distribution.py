@@ -105,7 +105,7 @@ class FlightDistributionComponent:
 
         flights_per_airport = flights_per_airport[flights_per_airport['num_flights'] > 500]
 
-        airports_df = pd.read_csv("csv/airports.csv")  
+        airports_df = pd.read_csv("data/csv/airports.csv")  
         airports_df = airports_df[['iata_code', 'latitude_deg', 'longitude_deg']]  
 
         flights_per_airport = flights_per_airport.merge(

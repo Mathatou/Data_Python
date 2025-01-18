@@ -1,9 +1,9 @@
-import utils.clean_data
-import utils.download
+import csv_utils.clean_data
+import csv_utils.download
 
 def main():
-    utils.download.main()
-    utils.clean_data.main()
+    csv_utils.download.main()
+    csv_utils.clean_data.main()
 
 
 
